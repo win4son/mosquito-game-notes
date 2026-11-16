@@ -3,6 +3,16 @@
 
 用法（在專案根目錄）：python3 scripts/check_site.py
 全部通過會印 CHECK ALL OK 並以 0 結束；有問題會列出每一條並以 1 結束。
+
+檢查範圍（對應 CLAUDE.md 第 11 節）：
+  - 頁面登記、連結與資源路徑
+  - <title>／lang／meta／<h1>、body 屬性、固定骨架
+  - 禁用 inline style 與色碼；標記 class 只限五種
+  - meta「資料來源」每個檔名後面都有章節
+  - <li>、<tbody> 的表格列、含數值單位的 <p>：自己或所屬標題要有標記
+
+不檢查：標記選得對不對、內容與上層規格是否一致、章節是否真的存在、畫面版面。
+所以 CHECK ALL OK 不等於完全符合 CLAUDE.md。
 """
 import re
 import sys
@@ -11,7 +21,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SUFFIX = " · 居家滅蚊遊戲筆記"
-ALLOWED_TAGS = {"confirmed", "proposed", "measured", "example"}
+ALLOWED_TAGS = {"confirmed", "proposed", "measured", "example", "pending"}
+NUMERIC = re.compile(r"\d+(\.\d+)?\s*(m|秒|%|項|隻|次|個)")
+# 檔名後面必須接「第 N 節」（可含 ～、頓號、小數點）或「章節名稱」
+CHAPTER = re.compile(r"^\s*(第\s*[\d.、～,，\s]+節|「[^」]+」)")
 errors = []
 
 
@@ -30,14 +43,21 @@ class Scan(HTMLParser):
         self.charset = False
         self.lang = None
         self.body_attrs = {}
-        self.refs = []          # (attr, value)
+        self.refs = []
         self.tag_classes = set()
         self.inline_style = False
         self.ids = set()
-        self.scripts = []
+        self.in_main = False
+        self.in_thead = False
+        self.blocks = []         # 目前開啟中的 li／tr／p：dict(kind, text, has_tag, exempt)
+        self.heading = None      # 目前開啟中的標題：dict(level, has_tag)
+        self.h2_tag = False
+        self.h3_tag = False
+        self.problems = []       # (kind, 摘要)
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
+        cls = a.get("class", "").split()
         if tag == "html":
             self.lang = a.get("lang")
         if tag == "h1":
@@ -53,34 +73,91 @@ class Scan(HTMLParser):
                 self.charset = True
         if tag == "body":
             self.body_attrs = a
-        if tag == "style":
-            self.inline_style = True
-        if "style" in a:
+        if tag == "style" or "style" in a:
             self.inline_style = True
         if "id" in a:
             self.ids.add(a["id"])
-        if tag == "script" and a.get("src"):
-            self.scripts.append(a["src"])
         for key in ("href", "src"):
             if key in a and a[key]:
                 self.refs.append(a[key])
-        if tag == "span" and "class" in a:
-            cls = a["class"].split()
-            if "tag" in cls:
-                self.tag_classes.update(c for c in cls if c != "tag")
+        if tag == "main":
+            self.in_main = True
+        if tag == "thead":
+            self.in_thead = True
+        if self.in_main:
+            if tag in ("h2", "h3"):
+                self.heading = {"level": tag, "has_tag": False}
+                if tag == "h2":
+                    self.h3_tag = False
+            if tag == "li":
+                self.blocks.append({"kind": "li", "text": "", "has_tag": False, "exempt": False})
+            elif tag == "tr" and not self.in_thead:
+                self.blocks.append({"kind": "表格列", "text": "", "has_tag": False, "exempt": False})
+            elif tag == "p":
+                exempt = "lead" in cls or "meta" in cls
+                self.blocks.append({"kind": "p", "text": "", "has_tag": False, "exempt": exempt})
+        if tag == "span" and "tag" in cls:
+            self.tag_classes.update(c for c in cls if c != "tag")
+            for b in self.blocks:
+                b["has_tag"] = True
+            if self.heading:
+                self.heading["has_tag"] = True
 
     def handle_endtag(self, tag):
         if tag == "title":
             self._in_title = False
+        if tag == "main":
+            self.in_main = False
+        if tag == "thead":
+            self.in_thead = False
+        if tag in ("h2", "h3") and self.heading and self.heading["level"] == tag:
+            if tag == "h2":
+                self.h2_tag = self.heading["has_tag"]
+            else:
+                self.h3_tag = self.heading["has_tag"]
+            self.heading = None
+        kind = {"li": "li", "tr": "表格列", "p": "p"}.get(tag)
+        if kind and self.blocks and self.blocks[-1]["kind"] == kind:
+            b = self.blocks.pop()
+            covered = b["has_tag"] or self.h2_tag or self.h3_tag
+            text = re.sub(r"\s+", " ", b["text"]).strip()
+            if b["exempt"] or covered:
+                return
+            if kind in ("li", "表格列") or NUMERIC.search(text):
+                self.problems.append((kind, text[:30]))
 
     def handle_data(self, data):
         if self._in_title:
             self.title += data
+        for b in self.blocks:
+            b["text"] += data
 
 
 def registered_pages():
     text = (ROOT / "assets" / "pages-data.js").read_text(encoding="utf-8")
     return re.findall(r'file:\s*"([^"]+)"', text)
+
+
+def check_meta_sources(path, text):
+    m = re.search(r'<p class="meta">(.*?)</p>', text, re.S)
+    if not m:
+        err(path, '缺少 <p class="meta">')
+        return
+    meta = m.group(1)
+    if "資料來源" not in meta:
+        err(path, 'meta 缺少「資料來源」')
+        return
+    # 只看「最後核對」之前的部分
+    src = meta.split("最後核對")[0]
+    if "*" in src:
+        err(path, "資料來源不可用 M*_Spec.md 這種統稱，要列出每個檔案")
+    codes = list(re.finditer(r"<code>([^<]+)</code>", src))
+    if not codes:
+        err(path, "資料來源沒有任何 <code>檔名</code>")
+    for c in codes:
+        rest = src[c.end():]
+        if not CHAPTER.match(rest):
+            err(path, f"資料來源「{c.group(1)}」後面缺少章節（第 N 節 或「章節名稱」）")
 
 
 def main():
@@ -125,12 +202,14 @@ def main():
             err(path, f'body data-page 應為 "{rel}"')
         if "site-header" not in s.ids or "site-footer" not in s.ids:
             err(path, "缺少 #site-header 或 #site-footer")
-        if not is_index and "pager" not in s.ids:
-            err(path, "缺少 #pager")
-        if not is_index and "資料來源" not in text:
-            err(path, '缺少 <p class="meta"> 的「資料來源」說明')
+        if not is_index:
+            if "pager" not in s.ids:
+                err(path, "缺少 #pager")
+            check_meta_sources(path, text)
         for cls in s.tag_classes - ALLOWED_TAGS:
             err(path, f"未知的標記 class「tag {cls}」，只允許 {sorted(ALLOWED_TAGS)}")
+        for kind, snippet in s.problems:
+            err(path, f"{kind}沒有標記（自己與所屬標題都沒有）：「{snippet}…」")
         for ref in s.refs:
             if re.match(r"^(https?:|mailto:|#)", ref):
                 continue

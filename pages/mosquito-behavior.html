@@ -12,7 +12,7 @@
   <main>
     <h1>蚊子行為</h1>
     <p class="lead">蚊子由一般程式的狀態機控制，不用文字模型逐影格決定行為。目標是「難找，不難打」。</p>
-    <p class="meta">資料來源：<code>M1_Mosquito_Spec.md</code>、<code>M2_Spec.md</code>、<code>M3_Spec.md</code> · 最後核對：2026-11-16</p>
+    <p class="meta">資料來源：<code>M1_Mosquito_Spec.md</code> 第 3、4、5 節、<code>M2_Spec.md</code> 第 4 節、<code>M3_Spec.md</code> 第 12、15、17、19 節 · 最後核對：2026-11-16</p>
 
     <h2>狀態機</h2>
     <p>M1 先做三個狀態，M2 加入主動叮人的兩個狀態。<span class="tag confirmed">已確認</span> 以下是目前實作的流程：</p>
@@ -27,7 +27,7 @@
       <span class="node">叮咬</span><span class="arrow">→ 完成或被打 →</span>
       <span class="node">飛行巡遊</span>
     </div>
-    <p>任何狀態被擊中都會移除蚊子。蚊子被拍死後不會立刻重生，新增由計時器負責，間隔是隨機的。</p>
+    <p>任何狀態被擊中都會移除蚊子。蚊子被拍死後不會立刻重生，新增由計時器負責，間隔是隨機的（見下表）。<span class="tag confirmed">已確認</span>（M3 規格第 17 節）</p>
 
     <h2>聲音線索</h2>
     <p>蚊子平常幾乎無聲，只有飛到耳邊才聽得到；停留時聲音更小但不消失，玩家還有一點線索。這是試玩後回饋改過的設計。<span class="tag measured">實測紀錄</span>（僅開發者一人）</p>
@@ -44,13 +44,13 @@
           <tr><td>停在手上的一般停留</td><td>1～2 秒，叮咬 1 秒</td><td><span class="tag confirmed">已確認</span>（M3a 試玩後調整）</td></tr>
           <tr><td>驚動距離（站著不動）</td><td>1.0 m，隨移動速度每 1 m/s 增加 0.2 m</td><td><span class="tag example">示例</span></td></tr>
           <tr><td>嗡嗡聲：完全聽不到／最大音量</td><td>2.0 m ／ 0.3 m</td><td><span class="tag example">示例</span></td></tr>
-          <tr><td>新蚊子生成間隔／同時上限</td><td>隨機 5～30 秒／2～6 隻</td><td><span class="tag example">示例</span></td></tr>
+          <tr><td>新蚊子生成間隔／同時上限</td><td>隨機 5～30 秒／2～6 隻</td><td><span class="tag confirmed">已確認</span>（試玩初始值；M3 規格第 17 節）</td></tr>
         </tbody>
       </table>
     </div>
 
     <h2>偷偷靠近的設計</h2>
-    <p>走路時驚動距離是 1.6 m，慢走時只有約 1.1 m，小於拍打可及距離 1.3 m。所以只有慢慢走才有大約 0.2 m 的出手窗口，這是刻意留給玩家的「偷偷靠近」機會。</p>
+    <p>走路時驚動距離是 1.6 m，慢走時只有約 1.1 m，小於拍打可及距離 1.3 m。所以只有慢慢走才有大約 0.2 m 的出手窗口，這是刻意留給玩家的「偷偷靠近」機會。<span class="tag example">示例</span>（數值出自 M1 規格第 4 節；慢走速度等細節以試玩調整為準）</p>
 
     <div id="pager"></div>
   </main>

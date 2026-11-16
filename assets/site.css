@@ -16,6 +16,8 @@
   --tag-measured-bg: #dfeafa;
   --tag-example: #6b3a82;
   --tag-example-bg: #f0e5f6;
+  --tag-pending: #4a5560;
+  --tag-pending-bg: #e6e9ec;
   --radius: 10px;
   --gutter: 16px;
 }
@@ -37,6 +39,8 @@
     --tag-measured-bg: #1b3050;
     --tag-example: #d6b3ea;
     --tag-example-bg: #35243f;
+    --tag-pending: #c3ccd4;
+    --tag-pending-bg: #2d363c;
   }
 }
 :root[data-theme="dark"] {
@@ -56,6 +60,8 @@
   --tag-measured-bg: #1b3050;
   --tag-example: #d6b3ea;
   --tag-example-bg: #35243f;
+  --tag-pending: #c3ccd4;
+  --tag-pending-bg: #2d363c;
 }
 
 * { box-sizing: border-box; }
@@ -117,6 +123,7 @@ code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; font-si
 .tag.proposed  { color: var(--tag-proposed);  background: var(--tag-proposed-bg); }
 .tag.measured  { color: var(--tag-measured);  background: var(--tag-measured-bg); }
 .tag.example   { color: var(--tag-example);   background: var(--tag-example-bg); }
+.tag.pending   { color: var(--tag-pending);   background: var(--tag-pending-bg); }
 
 /* 簡易流程／狀態圖：用 .flow 內的 span 排成一列 */
 .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 14px 0; }
