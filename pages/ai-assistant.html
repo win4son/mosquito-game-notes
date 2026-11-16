@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 研究助手 · 居家滅蚊遊戲筆記</title>
+  <meta name="description" content="遊戲內 AI 研究助手的角色、限制，以及目前暫停的狀態。">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body data-root="../" data-page="pages/ai-assistant.html">
+  <header id="site-header"></header>
+  <main>
+    <h1>AI 研究助手</h1>
+    <p class="lead">玩家卡關時可以問的助手：根據真實遊戲資料說明下一步，但不替玩家製作道具，也不修改進度。</p>
+    <p class="meta">資料來源：<code>M4_Spec.md</code> 第 42 節、<code>CLAUDE.md</code> · 最後核對：2026-11-16</p>
+
+    <div class="card warn"><strong>目前狀態：已暫停。</strong>2026-11-16 確認暫停，遊戲主體優先，助手排到最後再處理。暫停不是結案，遊戲之後計畫上架 Steam。<span class="tag confirmed">已確認</span></div>
+
+    <h2>助手的角色 <span class="tag confirmed">已確認</span></h2>
+    <ul>
+      <li>依照 <code>GameState</code> 裡的真實資料回答材料、配方、研發問題。</li>
+      <li>只把程式算好的事實說成自然的話；缺料計算與能否製作由程式決定。</li>
+      <li>回覆沒通過檢查或逾時，就改用模板回答。</li>
+    </ul>
+
+    <h2>實驗結果 <span class="tag measured">實測紀錄</span></h2>
+    <p>目前最佳版本是 C2：多語 MiniLM INT8 加規則加模板。在全新題目上，自然完整首答的比例是繁中 84.6%、英文 81.8%。這是開發者自己出題的測試集結果，樣本與題目分布有限，<strong>未接入正式遊戲</strong>。</p>
+
+    <h2>已排除的方向</h2>
+    <ul>
+      <li>使用者不偏好更大的模型，也不採用問題按鈕。<span class="tag confirmed">已確認</span></li>
+      <li>qwen3.5:9b 不再是候選。<span class="tag confirmed">已確認</span></li>
+    </ul>
+
+    <h2>恢復時要做的事</h2>
+    <p>改遊戲規則時不需要同步助手資料，恢復時再一次比對。暫停狀態、不得動的資料與恢復步驟記錄在 <code>M4_Spec.md</code> 第 42 節。</p>
+
+    <div id="pager"></div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="../assets/pages-data.js"></script>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

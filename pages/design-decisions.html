@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>設計決策 · 居家滅蚊遊戲筆記</title>
+  <meta name="description" content="已確認的設計決策、架構原則，以及已確認與建議的區分方式。">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body data-root="../" data-page="pages/design-decisions.html">
+  <header id="site-header"></header>
+  <main>
+    <h1>設計決策</h1>
+    <p class="lead">這個專案最重要的紀律：區分「使用者已經決定的」和「AI 只是建議的」。</p>
+    <p class="meta">資料來源：<code>CLAUDE.md</code>、<code>Mosquito_Game_Project_Expanded_v3.md</code> 第 14 節 · 最後核對：2026-11-16</p>
+
+    <h2>四種標記</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>標記</th><th>意思</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag confirmed">已確認</span></td><td>使用者明確選定的決策</td></tr>
+          <tr><td><span class="tag proposed">建議／待確認</span></td><td>AI 的建議，尚未定案；沒有使用者確認就不能升級成已確認</td></tr>
+          <tr><td><span class="tag measured">實測紀錄</span></td><td>真的跑過，必須附條件與限制（樣本、人數）</td></tr>
+          <tr><td><span class="tag example">示例</span></td><td>數值或配方只是說明用，會依試玩調整</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>架構原則 <span class="tag confirmed">已確認</span></h2>
+    <ul>
+      <li><strong>狀態集中：</strong>所有遊戲狀態放在 <code>GameState</code>（Godot Autoload）。場景節點只負責顯示與互動，存檔就是序列化 <code>GameState</code>，AI 後端讀的也是它。</li>
+      <li><strong>AI 不控制遊戲規則：</strong>缺料計算、能否製作、命中判定、存檔都由程式負責；模型只負責把程式算好的事實說成自然的話，回覆不通過檢查或逾時就改用模板。</li>
+      <li><strong>蚊子用狀態機：</strong>不用文字模型逐影格控制行為。</li>
+      <li><strong>素材分工：</strong>3D 模型不靠生成式 AI；生成式 AI 用在 2D 素材與文字，並保留提示詞紀錄。</li>
+    </ul>
+
+    <h2>近期決策</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>日期</th><th>決策</th><th>標記</th></tr></thead>
+        <tbody>
+          <tr><td>2026-11-11</td><td>電蚊拍須「擊殺 3 隻」且「清除積水」兩項皆完成才解鎖，取代原本任一即可</td><td><span class="tag confirmed">已確認</span></td></tr>
+          <tr><td>2026-11-11</td><td>電蚊拍幾何命中後 20% miss；手上蚊子拍打命中率 20%</td><td><span class="tag confirmed">已確認</span></td></tr>
+          <tr><td>2026-11-16</td><td>M4 AI 助手暫停，遊戲主體優先；之後計畫上架 Steam，所以是暫停不是結案</td><td><span class="tag confirmed">已確認</span></td></tr>
+          <tr><td>2026-11-16</td><td>M5 規格定案（全部照建議）；晝夜延後</td><td><span class="tag confirmed">已確認</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>為什麼這樣分</h2>
+    <p>讓 AI 協助寫企劃，最大的風險是它把自己的建議寫得像既成事實。把標記寫進規則並顯示在網頁上，讀者（包含之後的 AI）就能一眼分辨哪些可以直接依賴、哪些還要先問使用者。</p>
+
+    <div id="pager"></div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="../assets/pages-data.js"></script>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

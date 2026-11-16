@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>里程碑進度 · 居家滅蚊遊戲筆記</title>
+  <meta name="description" content="M1 到 M5 各里程碑完成了什麼、驗證到哪裡、還有哪些尚未驗證。">
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body data-root="../" data-page="pages/milestones.html">
+  <header id="site-header"></header>
+  <main>
+    <h1>里程碑進度</h1>
+    <p class="lead">每個里程碑都分開寫「做了什麼」和「驗證到哪裡」。自檢通過不等於試玩通過。</p>
+    <p class="meta">資料來源：<code>CLAUDE.md</code> 目前進度、各 <code>M*_Spec.md</code> · 最後核對：2026-11-16</p>
+
+    <div class="card warn">試玩樣本只有開發者一人，沒有正式計時或統計命中率。引擎為 Godot 4.7.2。</div>
+
+    <ul class="status-list">
+      <li>
+        <div class="name">M1　蚊子基礎 <span class="tag measured">開發者試玩通過</span></div>
+        方塊房間、第一人稱移動、飛行／停留／被擊中的蚊子、耳邊才有的聲音、偷偷靠近、徒手拍打。
+      </li>
+      <li>
+        <div class="name">M2　遊戲循環 <span class="tag measured">開發者試玩，回報合適</span></div>
+        <code>GameState</code> 集中保存狀態；叮咬、痕癢、體力、休息；窗戶與積水影響蚊子來源；目標解鎖配方。<br>
+        尚未再試玩的只有試玩後才加入的「隨機叮咬間隔」。
+      </li>
+      <li>
+        <div class="name">M3a　模組製作與電蚊拍 <span class="tag measured">部分試玩確認</span></div>
+        工作桌製作電蚊拍與固定式雷射。電蚊拍解鎖條件、命中率、停留時間已獲試玩確認；其餘數值仍是試玩初始值。
+      </li>
+      <li>
+        <div class="name">M3b　固定插槽換裝 <span class="tag proposed">自檢通過，待試玩</span></div>
+        雷射可換模組（體力恢復、近距／廣域、電池分級等）。已由獨立 agent 連跑三次無畫面自檢，每次 167 項通過，但沒有人工試玩。
+      </li>
+      <li>
+        <div class="name">M4　AI 研究助手 <span class="tag confirmed">已暫停</span></div>
+        2026-11-16 確認暫停，遊戲主體優先。詳見「AI 研究助手」頁。
+      </li>
+      <li>
+        <div class="name">M5　長期狀態與主體批次 <span class="tag proposed">已實作，待試玩</span></div>
+        存檔讀檔、展示路線與展示存檔、簡化疾病、2D 生成素材、雨天積水、拆解。無畫面自檢 403 項通過並經獨立審查，尚未人工試玩。晝夜因未來共享大廳的時間模型未定而延後。
+      </li>
+    </ul>
+
+    <h2>驗證方式</h2>
+    <p>改完程式一定先跑無畫面自檢，看到 <code>SELFTEST ALL OK</code> 才請使用者實際試玩。自檢只驗證程式邏輯，不能代替手感與趣味的判斷。</p>
+
+    <div id="pager"></div>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="../assets/pages-data.js"></script>
+  <script src="../assets/site.js"></script>
+</body>
+</html>

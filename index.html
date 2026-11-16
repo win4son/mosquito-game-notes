@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>居家滅蚊遊戲筆記</title>
+  <meta name="description" content="第一人稱居家滅蚊遊戲的開發筆記：設計、蚊子行為、里程碑與 AI 研究助手。">
+  <link rel="stylesheet" href="assets/site.css">
+</head>
+<body data-root="" data-page="index.html">
+  <header id="site-header"></header>
+  <main>
+    <h1>居家滅蚊遊戲筆記</h1>
+    <p class="lead">一款第一人稱、用 Godot 4 開發的居家滅蚊遊戲，從徒手拍蚊子，一路研發到模組化的自動雷射設備。這個網站整理它的設計、進度與決策。</p>
+
+    <div class="card note">
+      <strong>先讀這個：</strong>本專案是「階段性企劃加原型」，不是完成品。每個說法都標明是<span class="tag confirmed">已確認</span>、<span class="tag proposed">建議／待確認</span>、<span class="tag measured">實測紀錄</span>還是<span class="tag example">示例</span>；沒有使用者確認的東西不會被寫成已確認。
+    </div>
+
+    <h2>專案一句話</h2>
+    <p>玩家在自己家裡對抗蚊子：蚊子很難找，這份挫折感就是玩家想研發自動化設備的動機。環境（窗戶、積水）會影響蚊子的來源，叮咬會造成痕癢與體力消耗，進度則靠完成目標、取得材料與製作工具推進。</p>
+
+    <h2>網站內容</h2>
+    <div id="page-cards" class="grid"></div>
+
+    <h2>這個網站怎麼維護</h2>
+    <p>所有頁面共用同一套樣式與導覽，內容規則寫在專案根目錄的 <code>CLAUDE.md</code>。AI 或人類要新增頁面，只要照那份文件的「新增頁面流程」做，再執行 <code>python3 scripts/check_site.py</code> 檢查即可。</p>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/pages-data.js"></script>
+  <script src="assets/site.js"></script>
+</body>
+</html>
