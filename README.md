@@ -4,7 +4,7 @@
 
 國立暨南國際大學「生成式 AI」期末專案 · 學生：李志恒
 
-- 網站：發佈後補上 GitHub Pages 網址
+- 網站：https://win4son.github.io/mosquito-game-notes/
 - 專案規則：[CLAUDE.md](CLAUDE.md)（AI 與協作者新增頁面時的唯一依據）
 
 ## 本機預覽
